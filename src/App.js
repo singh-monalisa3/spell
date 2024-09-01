@@ -51,11 +51,11 @@ const XSpellCheck = () => {
         {suggestions.length > 0 ? (
           suggestions.map((suggestion, index) => (
             <p key={index}>
-              Did you mean: <strong>{suggestion.correct}</strong> for <strong>{suggestion.incorrect}</strong>?
+              Did you mean: <strong>{suggestion.correct}</strong>?
             </p>
           ))
         ) : (
-          inputText.trim() && <p>No suggestions, all words are correct.</p>
+          ''
         )}
       </div>
     </div>
