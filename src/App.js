@@ -10,33 +10,30 @@ const customDictionary = {
 
 const XSpellCheck = () => {
   const [inputText, setInputText] = useState('');
-  const [suggestion, setSuggestion] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
 
   // Function to handle input changes and check for spelling errors
   const handleInputChange = (event) => {
     const text = event.target.value;
     setInputText(text);
 
-    // Reset suggestion if input is empty
+    // Reset suggestions if input is empty
     if (text.trim() === '') {
-      setSuggestion('');
+      setSuggestions([]);
       return;
     }
 
-    // Split the text into words and find the first incorrect word
+    // Split the text into words and find incorrect words
     const words = text.split(/\s+/);
-    const firstIncorrectWord = words.find(
-      (word) => customDictionary[word.toLowerCase()]
-    );
+    const incorrectWords = words
+      .filter((word) => customDictionary[word.toLowerCase()])
+      .map((word) => ({
+        incorrect: word,
+        correct: customDictionary[word.toLowerCase()]
+      }));
 
-    // If a misspelled word is found, set the suggestion
-    if (firstIncorrectWord) {
-      setSuggestion(
-        `Did you mean: ${customDictionary[firstIncorrectWord.toLowerCase()]}?`
-      );
-    } else {
-      setSuggestion('');
-    }
+    // Set suggestions for all found misspelled words
+    setSuggestions(incorrectWords);
   };
 
   return (
@@ -51,7 +48,15 @@ const XSpellCheck = () => {
         style={{ width: '100%', padding: '10px', fontSize: '16px' }}
       />
       <div style={{ marginTop: '10px', color: '#333' }}>
-        {suggestion && <p><strong>{suggestion}</strong></p>}
+        {suggestions.length > 0 ? (
+          suggestions.map((suggestion, index) => (
+            <p key={index}>
+              Did you mean: <strong>{suggestion.correct}</strong> for <strong>{suggestion.incorrect}</strong>?
+            </p>
+          ))
+        ) : (
+          inputText.trim() && <p>No suggestions, all words are correct.</p>
+        )}
       </div>
     </div>
   );
